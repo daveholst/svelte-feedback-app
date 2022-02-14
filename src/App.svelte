@@ -1,66 +1,74 @@
 <script>
-  import { each } from "svelte/internal";
+    import FeedbackList from './components/FeedbackList.svelte'
+    import FeedbackStats from './components/FeedbackStats.svelte'
+    import FeedbackForm from './components/FeedbackForm.svelte'
+    let feedback = [
+        {
+            id: 1,
+            rating: 10,
+            text: 'Irure ut ipsum amet labore ullamco minim consectetur ipsum do. Labore voluptate ea esse ipsum voluptate anim qui labore esse irure adipisicing. Velit veniam culpa cupidatat et. Commodo cupidatat sint id non ea sunt nulla consectetur sunt aute. Dolor consectetur irure ullamco quis qui labore sunt sunt duis. Nisi excepteur voluptate labore fugiat labore consequat eu. Veniam commodo aliquip est commodo voluptate do ad laborum excepteur.',
+        },
+        {
+            id: 2,
+            rating: 9,
+            text: 'Irure ut ipsum amet labore ullamco minim consectetur ipsum do. Labore voluptate ea esse ipsum voluptate anim qui labore esse irure adipisicing. Velit veniam culpa cupidatat et. Commodo cupidatat sint id non ea sunt nulla consectetur sunt aute. Dolor consectetur irure ullamco quis qui labore sunt sunt duis. Nisi excepteur voluptate labore fugiat labore consequat eu. Veniam commodo aliquip est commodo voluptate do ad laborum excepteur.',
+        },
+        {
+            id: 3,
+            rating: 6,
+            text: 'Irure ut ipsum amet labore ullamco minim consectetur ipsum do. Labore voluptate ea esse ipsum voluptate anim qui labore esse irure adipisicing. Velit veniam culpa cupidatat et. Commodo cupidatat sint id non ea sunt nulla consectetur sunt aute. Dolor consectetur irure ullamco quis qui labore sunt sunt duis. Nisi excepteur voluptate labore fugiat labore consequat eu. Veniam commodo aliquip est commodo voluptate do ad laborum excepteur.',
+        },
+    ]
+    $: count = feedback.length
+    $: average = Math.floor(
+        feedback.reduce((a, { rating }) => a + rating, 0) / feedback.length
+    )
 
-  let firstName = "Dave";
-  let lastName = "Holst";
-  let color = "blue";
-
-  let showText = false;
-
-  let users = [
-    {
-      id: "1",
-      name: "John",
-    },
-    {
-      id: "2",
-      name: "Peter",
-    },
-    {
-      id: "3",
-      name: "Sarah",
-    },
-  ];
-
-  $: name = firstName + " " + lastName;
-
-  const toggle = () => {
-    color = color === "blue" ? "red" : "blue";
-    showText = !showText;
-    users = [...users, { id: "4", name: "Jen" }];
-  };
+    function deleteFeedback(event) {
+        const itemId = event.detail
+        feedback = feedback.filter((item) => item.id !== itemId)
+    }
+    function addFeedback(event) {
+        const feedbackItem = event.detail
+        feedback = [...feedback, feedbackItem]
+    }
 </script>
 
-<main>
-  <h1 style="color:{color}">Hello {name}!</h1>
-  {#if showText}
-    <p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-  {/if}
-  <button on:click={toggle}>Click to change color</button>
-
-  {#each users as user (user.id)}
-    <h3>{user.id}: {user.name}</h3>
-  {/each}
+<main class="container">
+    <FeedbackForm on:add-feedback={addFeedback} />
+    <FeedbackStats {count} {average} />
+    <FeedbackList {feedback} on:delete-feedback={deleteFeedback} />
 </main>
 
 <style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
+    header {
+        max-width: 400px;
+        margin: auto;
     }
-  }
+    header h2 {
+        font-size: 22px;
+        font-weight: 600;
+        text-align: center;
+    }
+    .input-group {
+        display: flex;
+        flex-direction: row;
+        border: 1px solid #ccc;
+        padding: 8px 10px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+    input {
+        flex-grow: 2;
+        border: none;
+        font-size: 16px;
+    }
+    input:focus {
+        outline: none;
+    }
+    .message {
+        padding-top: 10px;
+        text-align: center;
+        color: rebeccapurple;
+    }
 </style>
